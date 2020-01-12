@@ -1,4 +1,4 @@
-class MenuItemsController < ApplicationController
+class Api::MenuItemsController < ApplicationController
   before_action :set_menu_item, only: [:show, :edit, :update, :destroy]
 
   # GET /menu_items
@@ -19,45 +19,62 @@ class MenuItemsController < ApplicationController
 
   # GET /menu_items/1/edit
   def edit
+    if current_user && @menu_item.restaurant.user == current_user
+    else
+      render json: { 
+        status: 401,
+        errors: ['restaurant does not belong to you']
+      }
+    end
   end
 
   # POST /menu_items
   # POST /menu_items.json
   def create
-    @menu_item = MenuItem.new(menu_item_params)
-
-    respond_to do |format|
+    if current_user
+      @menu_item = MenuItem.new(menu_item_params)
       if @menu_item.save
-        format.html { redirect_to @menu_item, notice: 'Menu item was successfully created.' }
         format.json { render :show, status: :created, location: @menu_item }
       else
-        format.html { render :new }
         format.json { render json: @menu_item.errors, status: :unprocessable_entity }
       end
+    else
+      render json: { 
+        status: 401,
+        errors: ['login to add your menu item']
+      }
     end
   end
 
   # PATCH/PUT /menu_items/1
   # PATCH/PUT /menu_items/1.json
   def update
-    respond_to do |format|
+    if current_user && @restaurant.user == current_user
       if @menu_item.update(menu_item_params)
-        format.html { redirect_to @menu_item, notice: 'Menu item was successfully updated.' }
-        format.json { render :show, status: :ok, location: @menu_item }
+        render json: { status: 201,  message: 'menu item updated'}
       else
-        format.html { render :edit }
-        format.json { render json: @menu_item.errors, status: :unprocessable_entity }
+        render json: { status: 401,  errors: ['menu item not updated'] }
       end
+    else
+      render json: { 
+        status: 401,
+        errors: ['menu item does not belong to you']
+      }
     end
+    
   end
 
   # DELETE /menu_items/1
   # DELETE /menu_items/1.json
   def destroy
-    @menu_item.destroy
-    respond_to do |format|
-      format.html { redirect_to menu_items_url, notice: 'Menu item was successfully destroyed.' }
-      format.json { head :no_content }
+    if current_user && @restaurant.user == current_user
+      @menu_item.destroy
+      render json: { status: 201,  message: 'restaurant deleted'}
+    else
+      render json: { 
+        status: 401,
+        errors: ['restaurant does not belong to you']
+      }
     end
   end
 

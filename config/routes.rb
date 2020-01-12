@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     
     resources :users, only: [:create, :show]
     resources :restaurants do
-      resources :menu_items
+      resources :menu_items, except: :show
     end
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

@@ -42,9 +42,9 @@ class Api::MenuItemsController < ApplicationController
     if current_user
       @menu_item = MenuItem.new(menu_item_params)
       if @menu_item.save
-        format.json { render :show, status: :created, location: @menu_item }
+        render json: { status: 201,  message: 'menu item created'}
       else
-        format.json { render json: @menu_item.errors, status: :unprocessable_entity }
+        render json: { status: 401,  errors: ['menu item not created'] }
       end
     else
       render json: { 
@@ -59,9 +59,9 @@ class Api::MenuItemsController < ApplicationController
   def update
     if current_user && @restaurant.user == current_user
       if @menu_item.update(menu_item_params)
-        render json: { status: 201,  message: 'menu item updated'}
+        render json: { status: 201,  message: 'menu item created'}
       else
-        render json: { status: 401,  errors: ['menu item not updated'] }
+        render json: { status: 401,  errors: ['menu item not created'] }
       end
     else
       render json: { 
@@ -77,11 +77,11 @@ class Api::MenuItemsController < ApplicationController
   def destroy
     if current_user && @restaurant.user == current_user
       @menu_item.destroy
-      render json: { status: 201,  message: 'restaurant deleted'}
+      render json: { status: 201,  message: 'menu item deleted'}
     else
       render json: { 
         status: 401,
-        errors: ['restaurant does not belong to you']
+        errors: ['menu item does not belong to you']
       }
     end
   end

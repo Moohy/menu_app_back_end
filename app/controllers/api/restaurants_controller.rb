@@ -5,11 +5,19 @@ class Api::RestaurantsController < ApplicationController
   # GET /restaurants.json
   def index
     @restaurants = Restaurant.all
+    render json: { 
+      status: 200,
+      restaurants: @restaurants
+    }
   end
 
   # GET /restaurants/1
   # GET /restaurants/1.json
   def show
+    render json: { 
+      status: 200,
+      restaurant: @restaurant
+    }
   end
 
   # GET /restaurants/new

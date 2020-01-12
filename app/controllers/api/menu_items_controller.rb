@@ -4,7 +4,11 @@ class Api::MenuItemsController < ApplicationController
   # GET /menu_items
   # GET /menu_items.json
   def index
-    @menu_items = MenuItem.all
+    @menu_items = MenuItem.where(restaurant_id: params[:restaurant_id])
+    render json: { 
+      status: 200,
+      menu_items: @menu_items
+    }
   end
 
   # GET /menu_items/1

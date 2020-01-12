@@ -14,6 +14,10 @@ class Api::MenuItemsController < ApplicationController
   # GET /menu_items/1
   # GET /menu_items/1.json
   def show
+    render json: { 
+      status: 200,
+      restaurant: @restaurant
+    }
   end
 
   # GET /menu_items/new
